@@ -1,0 +1,166 @@
+import type { Block } from "@/components/RichContent";
+
+export const serviceContent: Record<string, Block[]> = {
+  "access-control-system": [
+    { type: "p", text: "An access control system is a security mechanism that controls who has access to a physical or digital space. The purpose of an access control system is to ensure that only authorized individuals can enter a specific area or use certain resources, while keeping unauthorized people out." },
+    { type: "p", text: "Access control systems typically use a combination of hardware and software components to manage access. The hardware components may include physical barriers such as gates, doors, and turnstiles, as well as electronic devices such as card readers, biometric scanners, and security cameras. The software components include the access control software that manages the system and determines who is authorized to access certain resources." },
+    { type: "h3", text: "Applications of Access Control Systems" },
+    { type: "ul", items: [
+      "Physical security: Control access to buildings, parking garages, and other physical spaces.",
+      "Information security: Control access to sensitive data and computer systems.",
+      "Industrial control: Control access to industrial equipment and machinery.",
+      "Time and attendance: Track employee attendance and work hours.",
+    ]},
+    { type: "p", text: "Overall, access control systems are an important tool for maintaining security and protecting assets, whether physical or digital." },
+  ],
+  "door-interlocking-solution": [
+    { type: "p", text: "Door interlocking is a system used to control the access of individuals to certain areas or rooms, usually in high-security environments. The system works by interlocking doors in a way that only allows one door to be open at a time, preventing unauthorized access to restricted areas." },
+    { type: "p", text: "One common door interlocking solution is the use of electromagnetic locks (maglocks). Maglocks use an electromagnet to hold a door closed, and can only be released by a signal from an access control system, such as a keycard reader or biometric scanner." },
+    { type: "p", text: "Another option is electric strikes, which keep the door locked until a valid credential is presented. A third option is a mechanical interlocking system using a series of mechanical locks and levers, typically used where electricity is not available." },
+    { type: "p", text: "The best door interlocking solution depends on the specific needs of the facility and the level of security required. It is important to consult with a professional security provider." },
+  ],
+  "time-attendance-management": [
+    { type: "p", text: "Time and attendance management is the process of tracking the working hours of employees, including their arrival and departure times, breaks, and absences. This information is used to manage payroll, calculate employee benefits, and monitor compliance with labor laws and company policies." },
+    { type: "h3", text: "Methods of Time & Attendance Management" },
+    { type: "ul", items: [
+      "Paper-based systems: Manually recording employee hours on paper time sheets or punch cards. Prone to errors and time-consuming.",
+      "Electronic time clocks: Digital time clock to record employee arrival and departure times. More accurate than paper-based systems.",
+      "Biometric systems: Use of biometric identifiers such as fingerprint or facial recognition. Highly accurate, eliminates need for physical time cards.",
+      "Mobile apps: Allow employees to clock in and out using mobile devices. Convenient for remote workers; records GPS location and time stamp automatically.",
+    ]},
+    { type: "p", text: "It is important to have a clear time and attendance policy and to regularly review and audit attendance records to ensure accuracy and compliance with labor laws." },
+  ],
+  "canteen-management": [
+    { type: "p", text: "Canteen management involves the operation and management of a cafeteria or canteen in a workplace, school, or other organization. The goal is to provide nutritious and affordable meals while maintaining high food quality, hygiene, and safety standards." },
+    { type: "h3", text: "Key Aspects of Canteen Management" },
+    { type: "ul", items: [
+      "Menu planning: Diverse, well-balanced menus accounting for cultural and dietary requirements; regularly reviewed based on customer feedback.",
+      "Food preparation: Hygienically prepared food following food safety standards and regulations; cooked and stored at appropriate temperatures.",
+      "Inventory management: Efficient management to avoid waste and ensure necessary ingredients and supplies are always available.",
+      "Pricing and payment: Reasonable and competitive prices; convenient payment methods including cash, debit/credit cards, or mobile payment apps.",
+      "Customer service: Trained staff providing friendly and efficient service; active feedback collection.",
+      "Health and safety: Compliance with local health and safety regulations.",
+    ]},
+  ],
+  "contract-labor-management": [
+    { type: "p", text: "Contract management involves the administration of contracts between parties, such as businesses, governments, or individuals. This includes activities such as negotiating, drafting, reviewing, and monitoring contracts to ensure they are being fulfilled as agreed." },
+    { type: "p", text: "Labor management involves the management of employees, including activities such as hiring, training, scheduling, and evaluating performance. This includes ensuring that employees are paid fairly and in accordance with labor laws and regulations." },
+    { type: "p", text: "Effective contract and labor management are critical to the success of any organization. This involves implementing efficient systems and processes for managing contracts and employees, as well as staying up-to-date with relevant laws and regulations. By effectively managing these areas, organizations can minimize risk, improve productivity, and enhance overall performance." },
+  ],
+  "visitor-management": [
+    { type: "p", text: "Visitor management is the process of welcoming, registering, and tracking visitors in a specific location such as a building, office, or event. It involves creating and implementing policies, procedures, and technology to ensure the safety and security of visitors, employees, and the premises." },
+    { type: "h3", text: "Key Components of Visitor Management" },
+    { type: "ul", items: [
+      "Pre-registration: Gathering and verifying visitor information in advance to make the check-in process faster and more efficient.",
+      "Check-in and badging: Streamlined process to register visitors and issue identification badges.",
+      "Host notification: Automatic alerts sent to hosts when their visitor arrives.",
+      "Security screening: Verification of visitor identity and purpose of visit.",
+      "Reporting and analytics: Tracking visitor data for security and compliance purposes.",
+    ]},
+  ],
+  "corporate-printing-management": [
+    { type: "p", text: "Corporate printing management refers to the process of managing and controlling the printing needs and resources of a company or organization. This includes managing printers, copiers, and other printing equipment, as well as controlling the use of printing supplies such as paper and ink." },
+    { type: "p", text: "Effective corporate printing management can help companies reduce costs, increase efficiency, and improve security." },
+    { type: "h3", text: "Key Considerations" },
+    { type: "ul", items: [
+      "Print policy: Company-wide guidelines for printing with usage limits to reduce unnecessary printing.",
+      "Equipment management: Proper maintenance and monitoring of all printing devices.",
+      "Cost control: Tracking and analyzing print usage to identify cost-saving opportunities.",
+      "Security: Protecting sensitive documents from unauthorized access.",
+    ]},
+  ],
+  "network-management": [
+    { type: "p", text: "Network management is the process of administering and controlling computer networks, including both software and hardware components. It involves monitoring network performance, identifying and resolving issues, and ensuring that network security and reliability are maintained." },
+    { type: "p", text: "The primary goal of network management is to ensure that a network operates efficiently and effectively, with minimal downtime and maximum performance. This involves activities such as network monitoring, configuration management, fault management, and performance management." },
+    { type: "h3", text: "Key Areas of Network Management" },
+    { type: "ul", items: [
+      "Network monitoring: Continuous observation of network performance and availability.",
+      "Configuration management: Managing and maintaining network device configurations.",
+      "Fault management: Identifying, isolating, and resolving network faults.",
+      "Performance management: Ensuring optimal network throughput and response times.",
+      "Security management: Protecting the network from unauthorized access and threats.",
+    ]},
+  ],
+  "it-infrastructure-management": [
+    { type: "p", text: "IT and infrastructure management is the practice of overseeing and controlling all components of an organization's information technology infrastructure, including hardware, software, networks, data centers, and cloud services." },
+    { type: "p", text: "Effective IT and infrastructure management ensures that an organization's technology resources are available, reliable, and secure. This enables businesses to operate efficiently and meet their strategic objectives." },
+    { type: "h3", text: "Core Activities" },
+    { type: "ul", items: [
+      "Asset management: Tracking and managing IT hardware and software assets throughout their lifecycle.",
+      "Change management: Controlling changes to IT systems to minimize disruption.",
+      "Capacity planning: Ensuring infrastructure can meet current and future demands.",
+      "Disaster recovery: Planning and implementing strategies to recover from IT failures.",
+    ]},
+  ],
+  "managed-printing-solution": [
+    { type: "p", text: "A Managed Printing Solution (MPS) is a comprehensive service provided by an external provider to optimize and manage a company's printing environment. MPS typically includes assessment, optimization, and management of the entire print infrastructure." },
+    { type: "p", text: "MPS helps organizations reduce printing costs, improve efficiency, enhance document security, and reduce environmental impact. The service provider takes responsibility for maintaining printers, managing supplies, and providing ongoing support." },
+    { type: "h3", text: "Benefits of Managed Printing Solutions" },
+    { type: "ul", items: [
+      "Cost reduction: Reduced printing costs through optimization and consolidation.",
+      "Improved efficiency: Streamlined printing processes and reduced downtime.",
+      "Enhanced security: Better control over document security and access.",
+      "Environmental sustainability: Reduced paper and energy consumption.",
+    ]},
+  ],
+  "cctv-system": [
+    { type: "p", text: "A Closed-Circuit Television (CCTV) system is a video surveillance system used for security and monitoring purposes. CCTV systems capture and record footage of a specific area, allowing businesses and organizations to monitor activities in real time and review recorded footage when needed." },
+    { type: "p", text: "CCTV systems are widely used in a variety of environments, including retail stores, offices, industrial facilities, public spaces, and residential areas. They serve as an effective deterrent against crime and provide valuable evidence in the event of an incident." },
+    { type: "h3", text: "Key Features of CCTV Systems" },
+    { type: "ul", items: [
+      "High-definition video recording for clear image capture.",
+      "Remote monitoring via smartphones and computers.",
+      "Night vision and low-light capabilities.",
+      "Motion detection and alert notifications.",
+      "Long-term storage with digital video recorders (DVR) or network video recorders (NVR).",
+    ]},
+  ],
+  "gym-software-management": [
+    { type: "p", text: "Gym software management involves the use of specialized software to manage and streamline gym or fitness center operations. This includes membership management, class scheduling, billing and payments, attendance tracking, and communication with members." },
+    { type: "p", text: "Effective gym software management helps fitness businesses improve operational efficiency, enhance member experience, and increase revenue. It provides gym owners and managers with valuable insights into membership trends, attendance patterns, and financial performance." },
+    { type: "h3", text: "Features of Gym Management Software" },
+    { type: "ul", items: [
+      "Membership management: Track member profiles, subscriptions, and renewals.",
+      "Class scheduling: Manage fitness classes, instructor assignments, and room bookings.",
+      "Billing and payments: Process membership fees, class bookings, and other charges.",
+      "Attendance tracking: Record member check-ins and monitor attendance patterns.",
+      "Reporting and analytics: Generate detailed reports on membership, revenue, and attendance.",
+    ]},
+  ],
+  "wifi-management-solution": [
+    { type: "p", text: "A WiFi management solution is a system that allows organizations to manage, monitor, and control their wireless network infrastructure. This includes managing access points, controlling bandwidth usage, monitoring network performance, and ensuring network security." },
+    { type: "p", text: "WiFi management solutions are essential for businesses and organizations that rely on wireless connectivity for their operations. They provide network administrators with the tools needed to maintain optimal network performance, ensure security, and provide reliable connectivity to users." },
+    { type: "h3", text: "Key Features of WiFi Management Solutions" },
+    { type: "ul", items: [
+      "Centralized management: Manage all wireless access points from a single dashboard.",
+      "Network monitoring: Real-time visibility into network performance and usage.",
+      "Access control: Control who can access the network and what resources they can use.",
+      "Bandwidth management: Prioritize network traffic and prevent bandwidth abuse.",
+      "Security: Protect the network from unauthorized access and security threats.",
+    ]},
+  ],
+  "intrusion-detection-system": [
+    { type: "p", text: "An Intrusion Detection System (IDS) is a security technology that monitors and analyzes network or system activities for signs of malicious activity, policy violations, or other security threats. When a potential threat is detected, the system generates an alert or takes automated action to prevent or minimize damage." },
+    { type: "p", text: "IDS systems are an essential component of a comprehensive security strategy, working alongside firewalls, antivirus software, and other security measures to protect organizations from cyber threats and physical intrusions." },
+    { type: "h3", text: "Types of Intrusion Detection Systems" },
+    { type: "ul", items: [
+      "Network-based IDS (NIDS): Monitors network traffic for suspicious activity and potential threats.",
+      "Host-based IDS (HIDS): Monitors activity on individual devices or hosts.",
+      "Signature-based detection: Identifies known threats based on predefined attack signatures.",
+      "Anomaly-based detection: Detects deviations from normal behavior patterns.",
+    ]},
+  ],
+  "fire-alarm-system": [
+    { type: "p", text: "A fire alarm system is a safety system designed to detect the presence of fire, smoke, or heat in a building and alert occupants and emergency services. Fire alarm systems are a critical component of building safety, helping to prevent loss of life and property damage by providing early warning of fire hazards." },
+    { type: "p", text: "Modern fire alarm systems use a network of sensors, detectors, and control panels to monitor a building for signs of fire. When a fire is detected, the system activates audible and visual alarms, and may also automatically trigger fire suppression systems and notify emergency services." },
+    { type: "h3", text: "Components of a Fire Alarm System" },
+    { type: "ul", items: [
+      "Smoke detectors: Detect the presence of smoke particles in the air.",
+      "Heat detectors: Activate when temperature rises above a set threshold.",
+      "Manual call points: Allow occupants to manually trigger the alarm.",
+      "Control panel: The central hub that monitors all sensors and manages alarm responses.",
+      "Notification devices: Sirens, strobe lights, and other devices to alert occupants.",
+      "Automatic sprinkler systems: Integrated fire suppression systems that activate automatically.",
+    ]},
+  ],
+};
