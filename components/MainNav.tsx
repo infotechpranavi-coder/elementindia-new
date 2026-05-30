@@ -1,19 +1,40 @@
 "use client";
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ChevronDown } from "lucide-react";
+import type { ProductCategoryItem } from "@/lib/catalog-types";
 import { WINE_BERRY, mainNavLinks, dropdownItems } from "@/lib/nav";
 
 export default function MainNav() {
   const pathname = usePathname();
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const [productNavItems, setProductNavItems] = useState<{ label: string; href: string }[]>([]);
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    void fetch("/api/product-categories", { cache: "no-store" })
+      .then((res) => res.json())
+      .then((data) => {
+        const categories = (data.categories || []) as ProductCategoryItem[];
+        setProductNavItems(
+          categories.map((cat) => ({
+            label: cat.name,
+            href: `/products/category/${cat.slug}`,
+          })),
+        );
+      })
+      .catch(() => {
+        setProductNavItems([]);
+      });
+  }, []);
 
   const linkIsActive = (href: string, label: string) => {
     if (href === "/") return pathname === "/";
     if (label === "Our Services") return pathname.startsWith("/our-services");
     if (label === "Industry") return pathname.startsWith("/industry");
+    if (label === "Blog") return pathname.startsWith("/blogs");
+    if (label === "Products") return pathname.startsWith("/products");
     return pathname === href || pathname.startsWith(`${href}/`);
   };
 
@@ -76,9 +97,20 @@ export default function MainNav() {
         >
           {mainNavLinks.map((link, i) => {
             const active = linkIsActive(link.href, link.label);
-            const hasDropdown = "hasDropdown" in link && link.hasDropdown;
+            const isProductsLink = link.label === "Products";
+            const productDropdown =
+              isProductsLink && productNavItems.length > 0 ? productNavItems : null;
+            const hasDropdown =
+              productDropdown != null ||
+              ("hasDropdown" in link && link.hasDropdown && !isProductsLink);
             const isOpen = activeDropdown === link.label;
-            const items = hasDropdown ? dropdownItems[link.label] : null;
+            const items =
+              productDropdown ??
+              (hasDropdown && !isProductsLink ? dropdownItems[link.label] : null);
+            const linkHref =
+              isProductsLink && productNavItems.length > 0
+                ? productNavItems[0].href
+                : link.href;
 
             return (
               <li
@@ -95,7 +127,7 @@ export default function MainNav() {
                 onMouseLeave={hasDropdown ? scheduleClose : undefined}
               >
                 <Link
-                  href={link.href}
+                  href={linkHref}
                   onClick={(e) => {
                     if (!hasDropdown) return;
                     if (activeDropdown !== link.label) {

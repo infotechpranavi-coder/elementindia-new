@@ -1,7 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
+import { DEFAULT_IMAGE } from "@/lib/content/images";
 
 export type Breadcrumb = { label: string; href?: string };
 
@@ -21,23 +23,35 @@ export default function PageHero({
   imageAlt,
 }: PageHeroProps) {
   const reduce = useReducedMotion();
+  const [src, setSrc] = useState(imageSrc);
+
+  useEffect(() => {
+    setSrc(imageSrc);
+  }, [imageSrc]);
 
   return (
     <section
       style={{
         position: "relative",
-        minHeight: "clamp(260px, 38vw, 380px)",
+        minHeight: "clamp(280px, 42vw, 420px)",
         display: "flex",
         alignItems: "flex-end",
         overflow: "hidden",
+        background: "var(--navy)",
       }}
       aria-label={`${title} — ${imageAlt}`}
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src={imageSrc}
-        alt=""
-        aria-hidden
+        key={src}
+        src={src}
+        alt={imageAlt}
+        fetchPriority="high"
+        decoding="async"
+        onError={() => {
+          const fallback = DEFAULT_IMAGE;
+          if (src !== fallback) setSrc(fallback);
+        }}
         style={{
           position: "absolute",
           inset: 0,
@@ -53,7 +67,7 @@ export default function PageHero({
           position: "absolute",
           inset: 0,
           background:
-            "linear-gradient(105deg, rgba(26,39,68,0.88) 0%, rgba(91,29,54,0.72) 45%, rgba(26,39,68,0.55) 100%)",
+            "linear-gradient(105deg, rgba(26,39,68,0.55) 0%, rgba(91,29,54,0.28) 55%, rgba(26,39,68,0.2) 100%)",
         }}
       />
       <div
@@ -120,6 +134,7 @@ export default function PageHero({
             lineHeight: 1.15,
             marginBottom: subtitle ? 12 : 0,
             maxWidth: 800,
+            textShadow: "0 2px 12px rgba(0,0,0,0.35)",
           }}
         >
           {title}
@@ -132,16 +147,16 @@ export default function PageHero({
             transition={{ duration: 0.55, delay: 0.14, ease: [0.22, 1, 0.36, 1] }}
             style={{
               fontSize: "clamp(15px, 2vw, 18px)",
-              color: "rgba(255,255,255,0.88)",
+              color: "rgba(255,255,255,0.92)",
               maxWidth: 620,
               lineHeight: 1.6,
+              textShadow: "0 1px 8px rgba(0,0,0,0.3)",
             }}
           >
             {subtitle}
           </motion.p>
         )}
       </div>
-
     </section>
   );
 }

@@ -3,8 +3,8 @@ import ContentCard from "@/components/ContentCard";
 import ScrollReveal from "@/components/motion/ScrollReveal";
 import { ScrollStagger, ScrollStaggerItem } from "@/components/motion/ScrollReveal";
 import { staggerVariantAt } from "@/lib/motion-presets";
-import { pageImages, getServiceImage } from "@/lib/content/images";
-import { ourServices } from "@/lib/site-pages";
+import { pageImages } from "@/lib/content/images";
+import { listPublicServices } from "@/lib/public-services";
 
 export const metadata = {
   title: "Our Services | Elemen India",
@@ -13,6 +13,8 @@ export const metadata = {
 };
 
 export default function OurServicesPage() {
+  const services = listPublicServices();
+
   return (
     <main>
       <PageHero
@@ -42,13 +44,13 @@ export default function OurServicesPage() {
           style={{ gap: 24 }}
           stagger={0.07}
         >
-          {ourServices.map((service, i) => (
+          {services.map((service, i) => (
             <ScrollStaggerItem key={service.slug} variant={staggerVariantAt(i)}>
               <ContentCard
                 href={`/our-services/${service.slug}`}
-                title={service.label}
-                imageSrc={getServiceImage(service.slug)}
-                imageAlt={service.label}
+                title={service.title}
+                imageSrc={service.imageUrl}
+                imageAlt={service.title}
                 index={i + 1}
               />
             </ScrollStaggerItem>

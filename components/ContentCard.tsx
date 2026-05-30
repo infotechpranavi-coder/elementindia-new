@@ -40,7 +40,7 @@ export default function ContentCard({
           loading="lazy"
           onError={(e) => {
             const img = e.currentTarget;
-            if (img.src !== DEFAULT_IMAGE) img.src = DEFAULT_IMAGE;
+            if (!img.src.includes("/services/")) img.src = DEFAULT_IMAGE;
           }}
           style={{
             width: "100%",

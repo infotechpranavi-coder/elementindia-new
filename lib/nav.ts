@@ -8,22 +8,16 @@ export const WINE_BERRY_DARK = "#451628";
 export const GOLD = "#C4A574";
 export const HEADER_BG = NAVY;
 
-export const searchCategories = [
-  "All Categories",
-  "Living Room",
-  "Bedroom",
-  "Dining",
-  "Office",
-  "Outdoor",
-  "Decor",
-];
+/** Default label for header search — product categories load dynamically in SiteHeader */
+export const SEARCH_ALL_CATEGORIES = "All Categories";
 
 export const mainNavLinks = [
   { label: "Home", href: "/" },
   { label: "About Us", href: "/about-us" },
   { label: "Our Services", href: "/our-services", hasDropdown: true },
   { label: "Industry", href: "/industry", hasDropdown: true },
-  { label: "Products", href: "/products" },
+  { label: "Products", href: "/products", hasDropdown: true },
+  { label: "Blog", href: "/blogs" },
   { label: "Brands", href: "/brands" },
   { label: "Contact Us", href: "/contact-us" },
 ] as const;

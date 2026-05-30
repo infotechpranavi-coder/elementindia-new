@@ -1,51 +1,49 @@
 import { notFound } from "next/navigation";
 import ContentPage from "@/components/ContentPage";
 import RichContent from "@/components/RichContent";
+import { getServiceHeroImage } from "@/lib/content/images";
 import { serviceContent } from "@/lib/content/services";
-import { getServiceImage } from "@/lib/content/images";
-import { getServiceBySlug, ourServices } from "@/lib/site-pages";
+import { getPublicService } from "@/lib/public-services";
+import { ourServices } from "@/lib/site-pages";
 import { variantsForSlug } from "@/lib/motion-presets";
 
 type Props = { params: Promise<{ slug: string }> };
 
-export async function generateStaticParams() {
-  return ourServices.map((s) => ({ slug: s.slug }));
+export function generateStaticParams() {
+  return ourServices.map((service) => ({ slug: service.slug }));
 }
 
 export async function generateMetadata({ params }: Props) {
   const { slug } = await params;
-  const service = getServiceBySlug(slug);
+  const service = getPublicService(slug);
   if (!service) return { title: "Service | Elemen India" };
   return {
-    title: `${service.label} | Elemen India`,
-    description: `${service.label} — solutions by Elemen India.`,
+    title: `${service.title} | Elemen India`,
+    description: service.summary,
   };
 }
 
 export default async function ServiceDetailPage({ params }: Props) {
   const { slug } = await params;
-  const service = getServiceBySlug(slug);
+  const service = getPublicService(slug);
   if (!service) notFound();
 
   const blocks = serviceContent[slug];
-  if (!blocks) notFound();
-
-  const { image: imageAnimation, content: contentAnimation } =
-    variantsForSlug(slug);
+  const { image: imageAnimation, content: contentAnimation } = variantsForSlug(slug);
 
   return (
     <ContentPage
-      title={service.label}
+      title={service.title}
       imageAnimation={imageAnimation}
       contentAnimation={contentAnimation}
       breadcrumbs={[
         { label: "Home", href: "/" },
         { label: "Our Services", href: "/our-services" },
-        { label: service.label },
+        { label: service.title },
       ]}
       heroImage={{
-        src: getServiceImage(slug),
-        alt: `${service.label} — Elemen India`,
+        src: getServiceHeroImage(slug),
+        alt: `${service.title} — security and IT solutions by Elemen India`,
       }}
     >
       <RichContent blocks={blocks} />

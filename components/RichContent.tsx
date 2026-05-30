@@ -7,7 +7,8 @@ type Block =
   | { type: "p"; text: string }
   | { type: "h2"; text: string }
   | { type: "h3"; text: string }
-  | { type: "ul"; items: string[] };
+  | { type: "ul"; items: string[] }
+  | { type: "ol"; items: string[] };
 
 export default function RichContent({ blocks }: { blocks: Block[] }) {
   return (
@@ -52,10 +53,11 @@ export default function RichContent({ blocks }: { blocks: Block[] }) {
             </ScrollStaggerItem>
           );
         }
-        if (block.type === "ul") {
+        if (block.type === "ul" || block.type === "ol") {
+          const ListTag = block.type === "ol" ? "ol" : "ul";
           return (
             <ScrollStaggerItem key={i} variant={variant}>
-              <ul
+              <ListTag
                 style={{
                   paddingLeft: 22,
                   color: "var(--text-mid)",
@@ -63,12 +65,12 @@ export default function RichContent({ blocks }: { blocks: Block[] }) {
                   lineHeight: 1.85,
                 }}
               >
-                {block.items.map((item) => (
-                  <li key={item} style={{ marginBottom: 8 }}>
+                {block.items.map((item, itemIndex) => (
+                  <li key={`${itemIndex}-${item.slice(0, 24)}`} style={{ marginBottom: 8 }}>
                     {item}
                   </li>
                 ))}
-              </ul>
+              </ListTag>
             </ScrollStaggerItem>
           );
         }

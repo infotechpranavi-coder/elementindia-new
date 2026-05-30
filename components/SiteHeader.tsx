@@ -1,25 +1,68 @@
 "use client";
-import { useState } from "react";
+
+import { FormEvent, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   Search,
   ChevronDown,
   Headphones,
-  User,
   ShoppingCart,
   Menu,
   X,
 } from "lucide-react";
-import { HEADER_BG, WINE_BERRY, searchCategories } from "@/lib/nav";
+import AccountMenu from "@/components/AccountMenu";
+import { useCart } from "@/components/CartProvider";
+import { HEADER_BG, WINE_BERRY, SEARCH_ALL_CATEGORIES } from "@/lib/nav";
 import { BRAND_NAME, LOGO_SRC } from "@/lib/brand";
+import type { ProductCategoryItem } from "@/lib/catalog-types";
 
 export default function SiteHeader() {
-  const [category, setCategory] = useState(searchCategories[0]);
+  const router = useRouter();
+  const { count } = useCart();
+  const [productCategories, setProductCategories] = useState<ProductCategoryItem[]>([]);
+  const [category, setCategory] = useState(SEARCH_ALL_CATEGORIES);
   const [query, setQuery] = useState("");
   const [mobileOpen, setMobileOpen] = useState(false);
 
+  const searchCategoryOptions = useMemo(
+    () => [SEARCH_ALL_CATEGORIES, ...productCategories.map((cat) => cat.name)],
+    [productCategories],
+  );
+
+  useEffect(() => {
+    void fetch("/api/product-categories", { cache: "no-store" })
+      .then((res) => res.json())
+      .then((data) => setProductCategories(data.categories || []))
+      .catch(() => setProductCategories([]));
+  }, []);
+
+  function runSearch(e?: FormEvent) {
+    e?.preventDefault();
+    const trimmed = query.trim();
+    const selected = productCategories.find((cat) => cat.name === category);
+
+    if (selected) {
+      const path = trimmed
+        ? `/products/category/${selected.slug}?q=${encodeURIComponent(trimmed)}`
+        : `/products/category/${selected.slug}`;
+      router.push(path);
+      return;
+    }
+
+    const path = trimmed ? `/products?q=${encodeURIComponent(trimmed)}` : "/products";
+    router.push(path);
+  }
+
   return (
-    <header style={{ background: HEADER_BG, position: "relative", zIndex: 10 }}>
+    <header
+      style={{
+        background: HEADER_BG,
+        position: "relative",
+        zIndex: 1100,
+        overflow: "visible",
+      }}
+    >
       <div
         style={{
           maxWidth: "1400px",
@@ -64,7 +107,7 @@ export default function SiteHeader() {
             marginLeft: 48,
             marginRight: 16,
           }}
-          onSubmit={(e) => e.preventDefault()}
+          onSubmit={runSearch}
         >
           <div
             style={{
@@ -80,6 +123,7 @@ export default function SiteHeader() {
               <select
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
+                aria-label="Search in product category"
                 style={{
                   appearance: "none",
                   padding: "12px 36px 12px 18px",
@@ -92,9 +136,10 @@ export default function SiteHeader() {
                   outline: "none",
                   borderRight: "1px solid #e0e0e0",
                   height: "100%",
+                  maxWidth: 160,
                 }}
               >
-                {searchCategories.map((c) => (
+                {searchCategoryOptions.map((c) => (
                   <option key={c} value={c}>
                     {c}
                   </option>
@@ -116,7 +161,7 @@ export default function SiteHeader() {
               type="search"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search product here..."
+              placeholder="Search products by name..."
               style={{
                 flex: 1,
                 padding: "12px 16px",
@@ -179,14 +224,7 @@ export default function SiteHeader() {
               </div>
             </div>
           </Link>
-          <Link
-            href="/elements#account"
-            className="hidden sm:flex"
-            style={{ color: "#fff", padding: 8 }}
-            aria-label="Account"
-          >
-            <User size={22} strokeWidth={1.5} />
-          </Link>
+          <AccountMenu />
 
           <div
             style={{
@@ -198,40 +236,40 @@ export default function SiteHeader() {
           />
 
           <Link
-            href="/shop"
+            href="/cart"
             style={{
               display: "flex",
               alignItems: "center",
-              gap: 10,
+              padding: 8,
               textDecoration: "none",
               color: "#fff",
             }}
+            aria-label={`Cart, ${count} items`}
           >
             <div style={{ position: "relative" }}>
               <ShoppingCart size={24} strokeWidth={1.5} />
-              <span
-                style={{
-                  position: "absolute",
-                  top: -6,
-                  right: -8,
-                  background: WINE_BERRY,
-                  color: "#fff",
-                  fontSize: 10,
-                  fontWeight: 700,
-                  width: 18,
-                  height: 18,
-                  borderRadius: "50%",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                0
-              </span>
-            </div>
-            <div className="hidden sm:block">
-              <div style={{ fontSize: 13, fontWeight: 700 }}>My Cart</div>
-              <div style={{ fontSize: 12, color: "#aaa" }}>$0.00</div>
+              {count > 0 ? (
+                <span
+                  style={{
+                    position: "absolute",
+                    top: -6,
+                    right: -8,
+                    background: WINE_BERRY,
+                    color: "#fff",
+                    fontSize: 10,
+                    fontWeight: 700,
+                    minWidth: 18,
+                    height: 18,
+                    padding: "0 4px",
+                    borderRadius: 999,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  {count > 99 ? "99+" : count}
+                </span>
+              ) : null}
             </div>
           </Link>
 
@@ -256,7 +294,7 @@ export default function SiteHeader() {
       <form
         className="md:hidden"
         style={{ padding: "0 20px 12px" }}
-        onSubmit={(e) => e.preventDefault()}
+        onSubmit={runSearch}
       >
         <div
           style={{
@@ -264,11 +302,32 @@ export default function SiteHeader() {
             borderRadius: 999,
             overflow: "hidden",
             background: "#fff",
+            marginBottom: 8,
           }}
         >
+          <select
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            aria-label="Search in product category"
+            style={{
+              padding: "10px 12px",
+              border: "none",
+              background: "#f0f0f0",
+              fontSize: 13,
+              maxWidth: 130,
+            }}
+          >
+            {searchCategoryOptions.map((c) => (
+              <option key={c} value={c}>
+                {c}
+              </option>
+            ))}
+          </select>
           <input
             type="search"
-            placeholder="Search product here..."
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search products..."
             style={{
               flex: 1,
               padding: "10px 16px",
@@ -317,6 +376,20 @@ export default function SiteHeader() {
           >
             <Headphones size={18} />
             (+91) 9867111459
+          </Link>
+          <Link
+            href="/account"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 10,
+              color: "#fff",
+              textDecoration: "none",
+              fontSize: 14,
+            }}
+            onClick={() => setMobileOpen(false)}
+          >
+            My Account
           </Link>
         </div>
       )}
