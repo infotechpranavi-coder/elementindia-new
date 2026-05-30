@@ -1,36 +1,14 @@
-import { promises as fs } from "fs";
-import path from "path";
-import type { CatalogData, ProductItem } from "@/lib/catalog-types";
+import type { ProductItem } from "@/lib/catalog-types";
 import { PRODUCTS_COLLECTION, getDb, isMongoConfigured } from "@/lib/server/db/mongodb";
 import { toProductItem, type ProductDocument } from "@/lib/server/db/product-schema";
-import { isCloudinaryUrl, uploadRemoteImageToCloudinary } from "@/lib/server/media/upload-remote-image";
-
-const dataFile = path.join(process.cwd(), "data", "catalog.json");
-
-async function readSeedProducts(): Promise<ProductItem[]> {
-  try {
-    const raw = await fs.readFile(dataFile, "utf-8");
-    const parsed = JSON.parse(raw) as Partial<CatalogData>;
-    return Array.isArray(parsed.products) ? parsed.products : [];
-  } catch {
-    return [];
-  }
-}
-
-async function resolveImageUrl(imageUrl: string) {
-  if (!imageUrl.trim()) return imageUrl;
-  if (isCloudinaryUrl(imageUrl)) return imageUrl;
-  try {
-    return await uploadRemoteImageToCloudinary(imageUrl);
-  } catch {
-    return imageUrl;
-  }
-}
+import { readSeedProducts } from "@/lib/server/seed-catalog";
 
 let migrationPromise: Promise<void> | null = null;
 
-/** One-time import from data/catalog.json into MongoDB + Cloudinary. */
+/** One-time import from data/catalog.json into MongoDB when the collection is empty. */
 export async function ensureProductsMigrated() {
+  if (!isMongoConfigured()) return;
+
   if (!migrationPromise) {
     migrationPromise = runMigration().catch((err) => {
       migrationPromise = null;
@@ -54,10 +32,8 @@ async function runMigration() {
 
   const now = new Date();
   for (const product of seed) {
-    const imageUrl = await resolveImageUrl(product.imageUrl);
     const doc: ProductDocument = {
       ...product,
-      imageUrl,
       createdAt: now,
       updatedAt: now,
     };
@@ -65,20 +41,46 @@ async function runMigration() {
   }
 }
 
+async function readProductsFromDb(): Promise<ProductItem[]> {
+  const db = await getDb();
+  const docs = await db
+    .collection<ProductDocument>(PRODUCTS_COLLECTION)
+    .find({})
+    .sort({ createdAt: -1 })
+    .toArray();
+  return docs.map(toProductItem);
+}
+
 export async function listProductsFromDb(): Promise<ProductItem[]> {
-  if (!isMongoConfigured()) return [];
+  if (!isMongoConfigured()) {
+    return readSeedProducts();
+  }
 
   try {
-    await ensureProductsMigrated();
-    const db = await getDb();
-    const docs = await db
-      .collection<ProductDocument>(PRODUCTS_COLLECTION)
-      .find({})
-      .sort({ createdAt: -1 })
-      .toArray();
-    return docs.map(toProductItem);
+    let products = await readProductsFromDb();
+
+    if (products.length === 0) {
+      try {
+        await ensureProductsMigrated();
+        products = await readProductsFromDb();
+      } catch (migrationErr) {
+        console.error("[products] Migration failed:", migrationErr);
+      }
+    }
+
+    if (products.length > 0) return products;
+
+    const seed = await readSeedProducts();
+    if (seed.length > 0) {
+      console.warn("[products] MongoDB returned no products; using bundled catalog seed.");
+    }
+    return seed;
   } catch (err) {
     console.error("[products] Failed to load products from MongoDB:", err);
-    return [];
+    const seed = await readSeedProducts();
+    if (seed.length > 0) {
+      console.warn("[products] Using bundled catalog seed after MongoDB error.");
+    }
+    return seed;
   }
 }
