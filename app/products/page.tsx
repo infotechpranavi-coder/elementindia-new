@@ -9,6 +9,8 @@ export const metadata = {
     "Security, surveillance, and management products from leading brands.",
 };
 
+export const dynamic = "force-dynamic";
+
 type Props = { searchParams: Promise<{ q?: string }> };
 
 export default async function ProductsPage({ searchParams }: Props) {

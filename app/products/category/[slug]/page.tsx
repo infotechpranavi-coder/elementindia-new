@@ -11,6 +11,8 @@ type Props = {
   searchParams: Promise<{ q?: string }>;
 };
 
+export const dynamic = "force-dynamic";
+
 export async function generateMetadata({ params }: Props) {
   const { slug } = await params;
   const category = await getProductCategoryBySlug(slug);

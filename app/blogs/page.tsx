@@ -9,6 +9,8 @@ export const metadata = {
   description: "Security and IT articles, guides, and insights from Elemen India.",
 };
 
+export const dynamic = "force-dynamic";
+
 export default async function BlogsPage() {
   const posts = await listPublishedBlogs();
 

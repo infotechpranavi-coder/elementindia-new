@@ -3,13 +3,18 @@ import PromoBanner from "@/components/PromoBanner";
 import FeaturedProducts from "@/components/FeaturedProducts";
 import ScrollReveal from "@/components/motion/ScrollReveal";
 import { pageImages } from "@/lib/content/images";
+import { listProducts } from "@/lib/server/catalog-store";
 
 export const metadata = {
   title: "Top Deals | Elemen India",
   description: "Special offers on CCTV and security packages from Elemen India.",
 };
 
-export default function TopDealsPage() {
+export const dynamic = "force-dynamic";
+
+export default async function TopDealsPage() {
+  const products = await listProducts();
+
   return (
     <main>
       <PageHero
@@ -26,7 +31,7 @@ export default function TopDealsPage() {
         <PromoBanner />
       </ScrollReveal>
       <ScrollReveal variant="fade-up">
-        <FeaturedProducts />
+        <FeaturedProducts products={products} />
       </ScrollReveal>
     </main>
   );
