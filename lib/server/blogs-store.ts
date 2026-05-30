@@ -1,5 +1,5 @@
 import type { BlogPost } from "@/lib/catalog-types";
-import { BLOGS_COLLECTION, getDb } from "@/lib/server/db/mongodb";
+import { BLOGS_COLLECTION, getDb, isMongoConfigured } from "@/lib/server/db/mongodb";
 import { toBlogPost, type BlogDocument } from "@/lib/server/db/blog-schema";
 import { slugify } from "@/lib/slugify";
 
@@ -32,28 +32,42 @@ export async function listBlogs() {
 }
 
 export async function listPublishedBlogs(limit?: number) {
-  const db = await getDb();
-  let cursor = db
-    .collection<BlogDocument>(BLOGS_COLLECTION)
-    .find({ published: true })
-    .sort({ publishedAt: -1 });
+  if (!isMongoConfigured()) return [];
 
-  if (limit && limit > 0) {
-    cursor = cursor.limit(limit);
+  try {
+    const db = await getDb();
+    let cursor = db
+      .collection<BlogDocument>(BLOGS_COLLECTION)
+      .find({ published: true })
+      .sort({ publishedAt: -1 });
+
+    if (limit && limit > 0) {
+      cursor = cursor.limit(limit);
+    }
+
+    const docs = await cursor.toArray();
+    return docs.map(toBlogPost);
+  } catch (err) {
+    console.error("[blogs] Failed to load published blogs:", err);
+    return [];
   }
-
-  const docs = await cursor.toArray();
-  return docs.map(toBlogPost);
 }
 
 export async function getBlogBySlug(slug: string, publishedOnly = false) {
-  const db = await getDb();
-  const doc = await db.collection<BlogDocument>(BLOGS_COLLECTION).findOne({
-    slug,
-    ...(publishedOnly ? { published: true } : {}),
-  });
-  if (!doc) return null;
-  return toBlogPost(doc);
+  if (!isMongoConfigured()) return null;
+
+  try {
+    const db = await getDb();
+    const doc = await db.collection<BlogDocument>(BLOGS_COLLECTION).findOne({
+      slug,
+      ...(publishedOnly ? { published: true } : {}),
+    });
+    if (!doc) return null;
+    return toBlogPost(doc);
+  } catch (err) {
+    console.error("[blogs] Failed to load blog:", err);
+    return null;
+  }
 }
 
 export async function getBlogById(id: string) {

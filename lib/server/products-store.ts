@@ -8,11 +8,16 @@ export async function listProducts() {
 }
 
 export async function getProductById(id: string) {
-  await ensureProductsMigrated();
-  const db = await getDb();
-  const doc = await db.collection<ProductDocument>(PRODUCTS_COLLECTION).findOne({ id });
-  if (!doc) return null;
-  return toProductItem(doc);
+  try {
+    await ensureProductsMigrated();
+    const db = await getDb();
+    const doc = await db.collection<ProductDocument>(PRODUCTS_COLLECTION).findOne({ id });
+    if (!doc) return null;
+    return toProductItem(doc);
+  } catch (err) {
+    console.error("[products] Failed to load product:", err);
+    return null;
+  }
 }
 
 export async function createProduct(input: Omit<ProductItem, "id">) {

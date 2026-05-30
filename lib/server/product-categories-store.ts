@@ -1,6 +1,6 @@
 import type { ProductCategoryItem } from "@/lib/catalog-types";
 import { slugify } from "@/lib/slugify";
-import { PRODUCT_CATEGORIES_COLLECTION, getDb } from "@/lib/server/db/mongodb";
+import { PRODUCT_CATEGORIES_COLLECTION, getDb, isMongoConfigured } from "@/lib/server/db/mongodb";
 import {
   toProductCategoryItem,
   type ProductCategoryDocument,
@@ -12,6 +12,16 @@ const DEFAULT_CATEGORIES = [
   { name: "Network", slug: "network", description: "Networking and connectivity products." },
   { name: "Safety", slug: "safety", description: "Safety and security hardware." },
 ];
+
+function fallbackCategories(): ProductCategoryItem[] {
+  return DEFAULT_CATEGORIES.map((item, index) => ({
+    id: `pcat-${item.slug}`,
+    name: item.name,
+    slug: item.slug,
+    description: item.description,
+    sortOrder: index,
+  }));
+}
 
 async function ensureDefaultCategories() {
   const db = await getDb();
@@ -56,31 +66,55 @@ async function collectionFindBySlug(db: Awaited<ReturnType<typeof getDb>>, slug:
 }
 
 export async function listProductCategories() {
-  await ensureDefaultCategories();
-  const db = await getDb();
-  const docs = await db
-    .collection<ProductCategoryDocument>(PRODUCT_CATEGORIES_COLLECTION)
-    .find({})
-    .sort({ sortOrder: 1, name: 1 })
-    .toArray();
+  if (!isMongoConfigured()) return fallbackCategories();
 
-  const seenSlugs = new Set<string>();
-  return docs
-    .map(toProductCategoryItem)
-    .filter((cat) => {
-      const slugKey = cat.slug.toLowerCase();
-      if (seenSlugs.has(slugKey)) return false;
-      seenSlugs.add(slugKey);
-      return true;
-    });
+  try {
+    await ensureDefaultCategories();
+    const db = await getDb();
+    const docs = await db
+      .collection<ProductCategoryDocument>(PRODUCT_CATEGORIES_COLLECTION)
+      .find({})
+      .sort({ sortOrder: 1, name: 1 })
+      .toArray();
+
+    const seenSlugs = new Set<string>();
+    return docs
+      .map(toProductCategoryItem)
+      .filter((cat) => {
+        const slugKey = cat.slug.toLowerCase();
+        if (seenSlugs.has(slugKey)) return false;
+        seenSlugs.add(slugKey);
+        return true;
+      });
+  } catch (err) {
+    console.error("[categories] Failed to load product categories:", err);
+    return fallbackCategories();
+  }
 }
 
 export async function getProductCategoryBySlug(slug: string) {
-  await ensureDefaultCategories();
-  const db = await getDb();
-  const doc = await db.collection<ProductCategoryDocument>(PRODUCT_CATEGORIES_COLLECTION).findOne({ slug });
-  if (!doc) return null;
-  return toProductCategoryItem(doc);
+  if (!isMongoConfigured()) {
+    const match = DEFAULT_CATEGORIES.find((cat) => cat.slug === slug);
+    if (!match) return null;
+    return {
+      id: `pcat-${match.slug}`,
+      name: match.name,
+      slug: match.slug,
+      description: match.description,
+      sortOrder: DEFAULT_CATEGORIES.indexOf(match),
+    };
+  }
+
+  try {
+    await ensureDefaultCategories();
+    const db = await getDb();
+    const doc = await db.collection<ProductCategoryDocument>(PRODUCT_CATEGORIES_COLLECTION).findOne({ slug });
+    if (!doc) return null;
+    return toProductCategoryItem(doc);
+  } catch (err) {
+    console.error("[categories] Failed to load category:", err);
+    return null;
+  }
 }
 
 export async function getProductCategoryById(id: string) {

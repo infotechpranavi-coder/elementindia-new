@@ -5,8 +5,12 @@ declare global {
   var _mongoClientPromise: Promise<MongoClient> | undefined;
 }
 
+export function isMongoConfigured() {
+  return Boolean(process.env.MONGODB_URI?.trim());
+}
+
 function getClientPromise() {
-  const uri = process.env.MONGODB_URI;
+  const uri = process.env.MONGODB_URI?.trim();
   if (!uri) {
     throw new Error("MONGODB_URI is not set in environment variables.");
   }

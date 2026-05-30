@@ -1,7 +1,7 @@
 import { promises as fs } from "fs";
 import path from "path";
 import type { CatalogData, ProductItem } from "@/lib/catalog-types";
-import { PRODUCTS_COLLECTION, getDb } from "@/lib/server/db/mongodb";
+import { PRODUCTS_COLLECTION, getDb, isMongoConfigured } from "@/lib/server/db/mongodb";
 import { toProductItem, type ProductDocument } from "@/lib/server/db/product-schema";
 import { isCloudinaryUrl, uploadRemoteImageToCloudinary } from "@/lib/server/media/upload-remote-image";
 
@@ -66,12 +66,19 @@ async function runMigration() {
 }
 
 export async function listProductsFromDb(): Promise<ProductItem[]> {
-  await ensureProductsMigrated();
-  const db = await getDb();
-  const docs = await db
-    .collection<ProductDocument>(PRODUCTS_COLLECTION)
-    .find({})
-    .sort({ createdAt: -1 })
-    .toArray();
-  return docs.map(toProductItem);
+  if (!isMongoConfigured()) return [];
+
+  try {
+    await ensureProductsMigrated();
+    const db = await getDb();
+    const docs = await db
+      .collection<ProductDocument>(PRODUCTS_COLLECTION)
+      .find({})
+      .sort({ createdAt: -1 })
+      .toArray();
+    return docs.map(toProductItem);
+  } catch (err) {
+    console.error("[products] Failed to load products from MongoDB:", err);
+    return [];
+  }
 }
