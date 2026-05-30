@@ -63,8 +63,7 @@ export default function MainNav() {
       style={{
         background: WINE_BERRY,
         color: "#fff",
-        position: "sticky",
-        top: 0,
+        position: "relative",
         zIndex: 1000,
         overflow: "visible",
       }}

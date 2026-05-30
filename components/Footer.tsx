@@ -6,10 +6,10 @@ import {
   BRAND_NAME,
   BRAND_TAGLINE,
   LOGO_SRC,
-  SUPPORT_EMAIL,
+  CONTACT_EMAIL,
+  PHONE_DISPLAY,
   PHONE_PRIMARY,
-  PHONE_SECONDARY,
-  OFFICE_ADDRESS,
+  OFFICE_ADDRESS_LINES,
 } from "@/lib/brand";
 
 const footerLinks = {
@@ -77,11 +77,22 @@ export default function Footer() {
             <p style={{ fontSize: 13, color: "#888", marginBottom: 16 }}>
               {BRAND_TAGLINE}
             </p>
-            <p style={{ fontSize: 14, lineHeight: 1.8, marginBottom: 24 }}>
+            <p style={{ fontSize: 14, lineHeight: 1.8, marginBottom: 16 }}>
               Mumbai-based specialists in security systems, access control, CCTV,
               and IT infrastructure solutions across India.
             </p>
-            <SocialIcons size={40} gap={14} />
+            <p
+              style={{
+                fontSize: 13,
+                fontWeight: 600,
+                color: "#fff",
+                marginBottom: 12,
+                letterSpacing: 0.5,
+              }}
+            >
+              Follow Us
+            </p>
+            <SocialIcons size={34} gap={8} />
           </div>
 
           {/* Services & Company link columns */}
@@ -146,14 +157,12 @@ export default function Footer() {
                     size={16}
                     style={{ color: "var(--gold)", flexShrink: 0, marginTop: 2 }}
                   />
-                  <span>
-                    (+91) {PHONE_PRIMARY} / {PHONE_SECONDARY}
-                  </span>
+                  <span>{PHONE_DISPLAY}</span>
                 </a>
               </li>
               <li>
                 <a
-                  href={`mailto:${SUPPORT_EMAIL}`}
+                  href={`mailto:${CONTACT_EMAIL}`}
                   className="flex items-start gap-3"
                   style={{
                     color: "#aaa",
@@ -173,7 +182,7 @@ export default function Footer() {
                     size={16}
                     style={{ color: "var(--gold)", flexShrink: 0, marginTop: 2 }}
                   />
-                  <span>{SUPPORT_EMAIL}</span>
+                  <span>{CONTACT_EMAIL}</span>
                 </a>
               </li>
               <li className="flex items-start gap-3" style={{ fontSize: 13, lineHeight: 1.7 }}>
@@ -181,7 +190,13 @@ export default function Footer() {
                   size={16}
                   style={{ color: "var(--gold)", flexShrink: 0, marginTop: 2 }}
                 />
-                <span>{OFFICE_ADDRESS}</span>
+                <span>
+                  {OFFICE_ADDRESS_LINES.map((line) => (
+                    <span key={line} style={{ display: "block" }}>
+                      {line}
+                    </span>
+                  ))}
+                </span>
               </li>
             </ul>
             <Link

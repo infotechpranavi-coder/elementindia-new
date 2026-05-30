@@ -8,8 +8,13 @@ import BannerGrid from "@/components/BannerGrid";
 import Testimonials from "@/components/Testimonials";
 import Blog from "@/components/Blog";
 import ScrollReveal from "@/components/motion/ScrollReveal";
+import { listProducts } from "@/lib/server/catalog-store";
 
-export default function Home() {
+export const dynamic = "force-dynamic";
+
+export default async function Home() {
+  const products = await listProducts();
+
   return (
     <main>
       <HeroSlider />
@@ -20,13 +25,13 @@ export default function Home() {
         <Categories />
       </ScrollReveal>
       <ScrollReveal variant="fade-right" duration={0.7}>
-        <FeaturedProducts />
+        <FeaturedProducts products={products} />
       </ScrollReveal>
       <ScrollReveal variant="zoom-in" duration={0.75}>
         <PromoBanner />
       </ScrollReveal>
       <ScrollReveal variant="flip-up" duration={0.7}>
-        <NewArrivals />
+        <NewArrivals products={products} />
       </ScrollReveal>
       <ScrollReveal variant="fade-down">
         <BannerGrid />

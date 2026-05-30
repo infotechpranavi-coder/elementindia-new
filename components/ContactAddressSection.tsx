@@ -4,7 +4,11 @@ import Link from "next/link";
 import { MapPin, ExternalLink } from "lucide-react";
 import SocialIcons from "@/components/SocialIcons";
 import ScrollReveal from "@/components/motion/ScrollReveal";
-import { OFFICE_ADDRESS_FULL, PHONE_PRIMARY } from "@/lib/brand";
+import {
+  OFFICE_ADDRESS_LINES,
+  PHONE_DISPLAY,
+  PHONE_PRIMARY,
+} from "@/lib/brand";
 
 const MAP_EMBED =
   "https://maps.google.com/maps?q=Rayaansh+Arcade+Thane+Station+West+Thane+400602&t=&z=16&ie=UTF8&iwloc=&output=embed";
@@ -103,7 +107,7 @@ export default function ContactAddressSection() {
                 >
                   ELEMEN INDIA Office
                 </h3>
-                <p
+                <div
                   style={{
                     fontSize: 15,
                     color: "var(--text-mid)",
@@ -111,8 +115,12 @@ export default function ContactAddressSection() {
                     marginBottom: 16,
                   }}
                 >
-                  {OFFICE_ADDRESS_FULL}
-                </p>
+                  {OFFICE_ADDRESS_LINES.map((line) => (
+                    <p key={line} style={{ margin: "0 0 4px" }}>
+                      {line}
+                    </p>
+                  ))}
+                </div>
                 <p
                   style={{
                     fontSize: 13,
@@ -125,12 +133,12 @@ export default function ContactAddressSection() {
                   Schedule a site visit or consultation with our team.
                 </p>
                 <p style={{ fontSize: 14, color: "var(--text-mid)", marginBottom: 20 }}>
-                  <strong style={{ color: "var(--navy)" }}>Phone:</strong>{" "}
+                  <strong style={{ color: "var(--navy)" }}>Contact Number:</strong>{" "}
                   <a
                     href={`tel:+91${PHONE_PRIMARY}`}
                     style={{ color: "var(--wine-berry)", textDecoration: "none" }}
                   >
-                    (+91) {PHONE_PRIMARY}
+                    {PHONE_DISPLAY}
                   </a>
                 </p>
                 <Link

@@ -21,7 +21,7 @@ export default function AboutUsPage() {
         alt: "Elemen India professional team and technology solutions",
       }}
     >
-      <RichContent blocks={aboutBlocks} />
+      <RichContent blocks={aboutBlocks} variant="about" />
     </ContentPage>
   );
 }

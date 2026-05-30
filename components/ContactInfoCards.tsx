@@ -1,12 +1,12 @@
 "use client";
 
-import { Phone, Mail, Clock, Headphones } from "lucide-react";
+import { Phone, Mail, MapPin } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import {
-  PHONE_PRIMARY,
-  PHONE_SECONDARY,
-  SUPPORT_EMAIL,
   CONTACT_EMAIL,
+  OFFICE_ADDRESS_LINES,
+  PHONE_DISPLAY,
+  PHONE_PRIMARY,
 } from "@/lib/brand";
 
 type InfoCard = {
@@ -18,27 +18,21 @@ type InfoCard = {
 
 const cards: InfoCard[] = [
   {
-    icon: Phone,
-    title: "Phone",
-    lines: [`(+91) ${PHONE_PRIMARY}`, `(+91) ${PHONE_SECONDARY}`],
-    href: `tel:+91${PHONE_PRIMARY}`,
+    icon: MapPin,
+    title: "Location",
+    lines: [...OFFICE_ADDRESS_LINES],
   },
   {
     icon: Mail,
-    title: "Support",
-    lines: [SUPPORT_EMAIL],
-    href: `mailto:${SUPPORT_EMAIL}`,
-  },
-  {
-    icon: Headphones,
-    title: "General enquiry",
+    title: "Mail us",
     lines: [CONTACT_EMAIL],
     href: `mailto:${CONTACT_EMAIL}`,
   },
   {
-    icon: Clock,
-    title: "Business hours",
-    lines: ["Mon – Sat: 9:00 AM – 6:00 PM", "Sunday: Closed"],
+    icon: Phone,
+    title: "Contact Number",
+    lines: [PHONE_DISPLAY],
+    href: `tel:+91${PHONE_PRIMARY}`,
   },
 ];
 
@@ -60,13 +54,11 @@ export default function ContactInfoCards() {
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.transform = "translateY(-3px)";
-              e.currentTarget.style.boxShadow =
-                "0 12px 28px rgba(26, 39, 68, 0.1)";
+              e.currentTarget.style.boxShadow = "0 12px 28px rgba(26, 39, 68, 0.1)";
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.transform = "translateY(0)";
-              e.currentTarget.style.boxShadow =
-                "0 4px 20px rgba(26, 39, 68, 0.06)";
+              e.currentTarget.style.boxShadow = "0 4px 20px rgba(26, 39, 68, 0.06)";
             }}
           >
             <div

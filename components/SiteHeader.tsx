@@ -59,7 +59,7 @@ export default function SiteHeader() {
       style={{
         background: HEADER_BG,
         position: "relative",
-        zIndex: 1100,
+        zIndex: 1,
         overflow: "visible",
       }}
     >

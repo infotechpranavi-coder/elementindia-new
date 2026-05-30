@@ -4,32 +4,40 @@ import { ScrollStagger, ScrollStaggerItem } from "@/components/motion/ScrollReve
 import { staggerVariantAt } from "@/lib/motion-presets";
 
 type Block =
-  | { type: "p"; text: string }
+  | { type: "p"; text: string; boldPrefix?: string }
   | { type: "h2"; text: string }
   | { type: "h3"; text: string }
   | { type: "ul"; items: string[] }
   | { type: "ol"; items: string[] };
 
-export default function RichContent({ blocks }: { blocks: Block[] }) {
+type RichContentProps = {
+  blocks: Block[];
+  /** About page uses maroon headings without underline */
+  variant?: "default" | "about";
+};
+
+export default function RichContent({ blocks, variant = "default" }: RichContentProps) {
+  const isAbout = variant === "about";
   return (
     <ScrollStagger
-      style={{ display: "flex", flexDirection: "column", gap: 16 }}
+      style={{ display: "flex", flexDirection: "column", gap: isAbout ? 20 : 16 }}
       stagger={0.1}
     >
       {blocks.map((block, i) => {
-        const variant = staggerVariantAt(i);
+        const revealVariant = staggerVariantAt(i);
 
         if (block.type === "h2") {
           return (
-            <ScrollStaggerItem key={i} variant={variant}>
+            <ScrollStaggerItem key={i} variant={revealVariant}>
               <h2
                 style={{
-                  fontSize: 22,
+                  fontSize: isAbout ? 24 : 22,
                   fontWeight: 700,
-                  color: "var(--navy)",
-                  marginTop: i > 0 ? 20 : 0,
-                  paddingBottom: 8,
-                  borderBottom: "2px solid var(--gold)",
+                  color: isAbout ? "var(--wine-berry)" : "var(--navy)",
+                  marginTop: i > 0 ? 28 : 0,
+                  marginBottom: isAbout ? 12 : 0,
+                  paddingBottom: isAbout ? 0 : 8,
+                  borderBottom: isAbout ? "none" : "2px solid var(--gold)",
                 }}
               >
                 {block.text}
@@ -39,7 +47,7 @@ export default function RichContent({ blocks }: { blocks: Block[] }) {
         }
         if (block.type === "h3") {
           return (
-            <ScrollStaggerItem key={i} variant={variant}>
+            <ScrollStaggerItem key={i} variant={revealVariant}>
               <h3
                 style={{
                   fontSize: 17,
@@ -56,7 +64,7 @@ export default function RichContent({ blocks }: { blocks: Block[] }) {
         if (block.type === "ul" || block.type === "ol") {
           const ListTag = block.type === "ol" ? "ol" : "ul";
           return (
-            <ScrollStaggerItem key={i} variant={variant}>
+            <ScrollStaggerItem key={i} variant={revealVariant}>
               <ListTag
                 style={{
                   paddingLeft: 22,
@@ -75,15 +83,23 @@ export default function RichContent({ blocks }: { blocks: Block[] }) {
           );
         }
         return (
-          <ScrollStaggerItem key={i} variant={variant}>
+          <ScrollStaggerItem key={i} variant={revealVariant}>
             <p
               style={{
                 fontSize: 15,
                 color: "var(--text-mid)",
                 lineHeight: 1.9,
+                margin: 0,
               }}
             >
-              {block.text}
+              {block.boldPrefix ? (
+                <>
+                  <strong style={{ color: "#333", fontWeight: 700 }}>{block.boldPrefix}</strong>
+                  {block.text}
+                </>
+              ) : (
+                block.text
+              )}
             </p>
           </ScrollStaggerItem>
         );

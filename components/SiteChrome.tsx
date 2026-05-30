@@ -3,8 +3,7 @@
 import { usePathname } from "next/navigation";
 import { AuthProvider } from "@/components/AuthProvider";
 import { CartProvider } from "@/components/CartProvider";
-import SiteHeader from "@/components/SiteHeader";
-import MainNav from "@/components/MainNav";
+import SiteNavigation from "@/components/SiteNavigation";
 import Footer from "@/components/Footer";
 
 export default function SiteChrome({ children }: { children: React.ReactNode }) {
@@ -18,8 +17,7 @@ export default function SiteChrome({ children }: { children: React.ReactNode }) 
   return (
     <AuthProvider>
       <CartProvider>
-        <SiteHeader />
-        <MainNav />
+        <SiteNavigation />
         {children}
         <Footer />
       </CartProvider>

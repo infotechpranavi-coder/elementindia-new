@@ -1,6 +1,12 @@
 "use client";
-import { useState } from "react";
+
+import { useRef, useState } from "react";
 import { Star, ChevronLeft, ChevronRight, Quote } from "lucide-react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay, EffectFade } from "swiper/modules";
+import type { Swiper as SwiperType } from "swiper";
+import "swiper/css";
+import "swiper/css/effect-fade";
 
 const reviews = [
   {
@@ -41,88 +47,141 @@ const reviews = [
   },
 ];
 
+const navBtnStyle: React.CSSProperties = {
+  width: 40,
+  height: 40,
+  borderRadius: "50%",
+  border: "1.5px solid #ddd",
+  background: "#fff",
+  cursor: "pointer",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  transition: "all 0.2s",
+  color: "#333",
+};
+
+function ReviewCard({ review }: { review: (typeof reviews)[number] }) {
+  return (
+    <div
+      style={{
+        background: "#fff",
+        borderRadius: 16,
+        padding: "48px 48px 40px",
+        boxShadow: "0 10px 40px rgba(0,0,0,0.08)",
+        textAlign: "center",
+        position: "relative",
+      }}
+    >
+      <div style={{ position: "absolute", top: 28, left: 36, color: "#5B1D36", opacity: 0.3 }}>
+        <Quote size={48} />
+      </div>
+
+      <div className="flex justify-center gap-1" style={{ marginBottom: 24 }}>
+        {[...Array(5)].map((_, i) => (
+          <Star
+            key={i}
+            size={18}
+            fill={i < review.rating ? "#f59e0b" : "none"}
+            color={i < review.rating ? "#f59e0b" : "#ddd"}
+          />
+        ))}
+      </div>
+
+      <p style={{ fontSize: 17, color: "#444", lineHeight: 1.8, marginBottom: 32, fontStyle: "italic" }}>
+        &ldquo;{review.text}&rdquo;
+      </p>
+
+      <div className="flex items-center justify-center gap-4">
+        <div
+          style={{
+            width: 52,
+            height: 52,
+            borderRadius: "50%",
+            background: `linear-gradient(135deg, ${review.color}, ${review.color}88)`,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            color: "#fff",
+            fontWeight: 700,
+            fontSize: 15,
+          }}
+        >
+          {review.avatar}
+        </div>
+        <div style={{ textAlign: "left" }}>
+          <div style={{ fontWeight: 600, color: "var(--navy)", fontSize: 16 }}>{review.name}</div>
+          <div style={{ fontSize: 13, color: "#888" }}>{review.location}</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function Testimonials() {
+  const swiperRef = useRef<SwiperType | null>(null);
   const [current, setCurrent] = useState(0);
 
   return (
     <section className="elemen-dots" style={{ padding: "80px 0" }}>
       <div style={{ maxWidth: "1300px", margin: "0 auto", padding: "0 20px" }}>
         <div className="text-center" style={{ marginBottom: 50 }}>
-          <span style={{ fontSize: 12, letterSpacing: 3, color: "var(--wine-berry)", textTransform: "uppercase", fontWeight: 600 }}>Happy Clients</span>
-          <h2 style={{ fontSize: "clamp(26px, 4vw, 40px)", color: "var(--navy)", margin: "10px 0 0", fontWeight: 700 }}>
+          <span
+            style={{
+              fontSize: 12,
+              letterSpacing: 3,
+              color: "var(--wine-berry)",
+              textTransform: "uppercase",
+              fontWeight: 600,
+            }}
+          >
+            Happy Clients
+          </span>
+          <h2
+            style={{
+              fontSize: "clamp(26px, 4vw, 40px)",
+              color: "var(--navy)",
+              margin: "10px 0 0",
+              fontWeight: 700,
+            }}
+          >
             What Our Customers Say
           </h2>
         </div>
 
         <div style={{ position: "relative", maxWidth: 800, margin: "0 auto" }}>
-          <div
-            style={{
-              background: "#fff",
-              borderRadius: 16,
-              padding: "48px 48px 40px",
-              boxShadow: "0 10px 40px rgba(0,0,0,0.08)",
-              textAlign: "center",
-              position: "relative",
+          <Swiper
+            modules={[Autoplay, EffectFade]}
+            effect="fade"
+            fadeEffect={{ crossFade: true }}
+            loop
+            speed={650}
+            autoplay={{
+              delay: 4500,
+              disableOnInteraction: false,
+              pauseOnMouseEnter: true,
+            }}
+            pagination={false}
+            onSwiper={(swiper) => {
+              swiperRef.current = swiper;
+            }}
+            onSlideChange={(swiper) => {
+              setCurrent(swiper.realIndex);
             }}
           >
-            <div style={{ position: "absolute", top: 28, left: 36, color: "#5B1D36", opacity: 0.3 }}>
-              <Quote size={48} />
-            </div>
-
-            <div className="flex justify-center gap-1" style={{ marginBottom: 24 }}>
-              {[...Array(5)].map((_, i) => (
-                <Star
-                  key={i}
-                  size={18}
-                  fill={i < reviews[current].rating ? "#f59e0b" : "none"}
-                  color={i < reviews[current].rating ? "#f59e0b" : "#ddd"}
-                />
-              ))}
-            </div>
-
-            <p style={{ fontSize: 17, color: "#444", lineHeight: 1.8, marginBottom: 32, fontStyle: "italic" }}>
-              &ldquo;{reviews[current].text}&rdquo;
-            </p>
-
-            <div className="flex items-center justify-center gap-4">
-              <div
-                style={{
-                  width: 52,
-                  height: 52,
-                  borderRadius: "50%",
-                  background: `linear-gradient(135deg, ${reviews[current].color}, ${reviews[current].color}88)`,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  color: "#fff",
-                  fontWeight: 700,
-                  fontSize: 15,
-                }}
-              >
-                {reviews[current].avatar}
-              </div>
-              <div style={{ textAlign: "left" }}>
-                <div style={{ fontWeight: 600, color: "var(--navy)", fontSize: 16 }}>{reviews[current].name}</div>
-                <div style={{ fontSize: 13, color: "#888" }}>{reviews[current].location}</div>
-              </div>
-            </div>
-          </div>
+            {reviews.map((review) => (
+              <SwiperSlide key={review.id}>
+                <ReviewCard review={review} />
+              </SwiperSlide>
+            ))}
+          </Swiper>
 
           <div className="flex items-center justify-center gap-4" style={{ marginTop: 32 }}>
             <button
-              onClick={() => setCurrent((current - 1 + reviews.length) % reviews.length)}
-              style={{
-                width: 40,
-                height: 40,
-                borderRadius: "50%",
-                border: "1.5px solid #ddd",
-                background: "#fff",
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                transition: "all 0.2s",
-              }}
+              type="button"
+              aria-label="Previous review"
+              onClick={() => swiperRef.current?.slidePrev()}
+              style={navBtnStyle}
               onMouseEnter={(e) => {
                 e.currentTarget.style.background = "#5B1D36";
                 e.currentTarget.style.borderColor = "#5B1D36";
@@ -139,7 +198,9 @@ export default function Testimonials() {
             {reviews.map((_, i) => (
               <button
                 key={i}
-                onClick={() => setCurrent(i)}
+                type="button"
+                aria-label={`Go to review ${i + 1}`}
+                onClick={() => swiperRef.current?.slideToLoop(i)}
                 style={{
                   width: i === current ? 24 : 8,
                   height: 8,
@@ -152,19 +213,10 @@ export default function Testimonials() {
               />
             ))}
             <button
-              onClick={() => setCurrent((current + 1) % reviews.length)}
-              style={{
-                width: 40,
-                height: 40,
-                borderRadius: "50%",
-                border: "1.5px solid #ddd",
-                background: "#fff",
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                transition: "all 0.2s",
-              }}
+              type="button"
+              aria-label="Next review"
+              onClick={() => swiperRef.current?.slideNext()}
+              style={navBtnStyle}
               onMouseEnter={(e) => {
                 e.currentTarget.style.background = "#5B1D36";
                 e.currentTarget.style.borderColor = "#5B1D36";

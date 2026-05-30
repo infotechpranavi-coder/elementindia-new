@@ -1,23 +1,26 @@
 "use client";
 
+import { useState } from "react";
 import { brandCategories } from "@/lib/content/brands";
 import ScrollReveal from "@/components/motion/ScrollReveal";
 import { ScrollStagger, ScrollStaggerItem } from "@/components/motion/ScrollReveal";
 import { staggerVariantAt } from "@/lib/motion-presets";
 
-function BrandTile({ name, tagline }: { name: string; tagline?: string }) {
+function BrandTile({ name, imageUrl }: { name: string; imageUrl: string }) {
+  const [failed, setFailed] = useState(false);
+
   return (
     <div
       style={{
         background: "#fff",
         border: "1px solid #e0e0e0",
-        borderRadius: 6,
-        minHeight: 88,
+        borderRadius: 8,
+        minHeight: 96,
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        padding: "16px 12px",
+        padding: "14px 12px",
         textAlign: "center",
         transition: "box-shadow 0.2s, border-color 0.2s, transform 0.2s",
       }}
@@ -32,29 +35,31 @@ function BrandTile({ name, tagline }: { name: string; tagline?: string }) {
         e.currentTarget.style.transform = "translateY(0)";
       }}
     >
-      <span
-        style={{
-          fontSize: name.length > 12 ? 13 : 15,
-          fontWeight: 700,
-          color: "#1a1a1a",
-          letterSpacing: name === name.toUpperCase() ? 0.5 : 0,
-          lineHeight: 1.25,
-          textTransform: name === "dahua" || name === "apollo" ? "none" : undefined,
-        }}
-      >
-        {name}
-      </span>
-      {tagline && (
+      {!failed ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={imageUrl}
+          alt={`${name} logo`}
+          onError={() => setFailed(true)}
+          style={{
+            maxWidth: "100%",
+            maxHeight: 52,
+            width: "auto",
+            height: "auto",
+            objectFit: "contain",
+            display: "block",
+          }}
+        />
+      ) : (
         <span
           style={{
-            fontSize: 10,
-            color: "#666",
-            marginTop: 6,
-            fontWeight: 500,
-            lineHeight: 1.3,
+            fontSize: name.length > 12 ? 13 : 15,
+            fontWeight: 700,
+            color: "#1a1a1a",
+            lineHeight: 1.25,
           }}
         >
-          {tagline}
+          {name}
         </span>
       )}
     </div>
@@ -65,10 +70,7 @@ export default function BrandsShowcase() {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 48 }}>
       {brandCategories.map((category, catIndex) => (
-        <ScrollReveal
-          key={category.id}
-          variant={staggerVariantAt(catIndex)}
-        >
+        <ScrollReveal key={category.id} variant={staggerVariantAt(catIndex)}>
           <section>
             <h2
               style={{
@@ -94,14 +96,14 @@ export default function BrandsShowcase() {
             <ScrollStagger
               style={{
                 display: "grid",
-                gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))",
+                gridTemplateColumns: "repeat(auto-fill, minmax(148px, 1fr))",
                 gap: 16,
               }}
               stagger={0.05}
             >
-              {category.brands.map((brand, i) => (
+              {category.brands.map((brand) => (
                 <ScrollStaggerItem key={`${category.id}-${brand.name}`} variant="fade-up">
-                  <BrandTile name={brand.name} tagline={brand.tagline} />
+                  <BrandTile name={brand.name} imageUrl={brand.imageUrl} />
                 </ScrollStaggerItem>
               ))}
             </ScrollStagger>

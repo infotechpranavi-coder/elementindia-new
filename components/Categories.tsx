@@ -1,16 +1,20 @@
 "use client";
 import Link from "next/link";
 import { useState } from "react";
-import { homeImages } from "@/lib/content/home-images";
+import { getServiceHeroImage } from "@/lib/content/images";
 
 const categories = [
-  { name: "CCTV Systems", count: 120, href: "/our-services/cctv-system", img: homeImages.categories.cctv },
-  { name: "Access Control", count: 85, href: "/our-services/access-control-system", img: homeImages.categories.accessControl },
-  { name: "Fire Safety", count: 64, href: "/our-services/fire-alarm-system", img: homeImages.categories.fireSafety },
-  { name: "Network & IT", count: 92, href: "/our-services/network-management", img: homeImages.categories.network },
-  { name: "Visitor Management", count: 48, href: "/our-services/visitor-management", img: homeImages.categories.visitor },
-  { name: "Time Attendance", count: 56, href: "/our-services/time-attendance-management", img: homeImages.categories.attendance },
-];
+  { name: "CCTV Systems", count: 120, slug: "cctv-system" },
+  { name: "Access Control", count: 85, slug: "access-control-system" },
+  { name: "Fire Safety", count: 64, slug: "fire-alarm-system" },
+  { name: "Network & IT", count: 92, slug: "network-management" },
+  { name: "Visitor Management", count: 48, slug: "visitor-management" },
+  { name: "Time Attendance", count: 56, slug: "time-attendance-management" },
+].map((cat) => ({
+  ...cat,
+  href: `/our-services/${cat.slug}`,
+  img: getServiceHeroImage(cat.slug),
+}));
 
 export default function Categories() {
   const [hovered, setHovered] = useState<number | null>(null);
